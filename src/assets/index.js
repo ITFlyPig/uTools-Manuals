@@ -91,6 +91,28 @@ showManual = path => {
         var file = `${window.manualVars.dirs.docPath}/${f}`;
         $("#mainlist").fadeOut();
         $(".load").html('Loading').show();
+
+        // 路径包含`wyl`字符，则html直接加载，加速显示
+        if (!isMd && file.indexOf("wyl") != -1) {
+            $(".load").hide();
+            $("#manualBody").load(file)
+            $("#manual").fadeIn()
+            Prism.highlightAll();
+            location.href = e ? id : '#manualBody';
+            $('#manualNavi').autoMenu();
+            if ($('h1,h2,h3').length < 10 && $('#manualNavi ul').is(":visible")) {
+                $('.btn-box span').removeClass('icon-minus-sign').addClass('icon-plus-sign')
+                // $('#manualBody').removeClass('withNaviBar')
+                $('#manualNavi ul').hide()
+            // } else {
+                // $('#manualBody').addClass('withNaviBar')
+                // $('#manualNavi input').focus()
+            }
+            manualSubInput();
+            return
+        }
+
+
         var request = $.ajax({
             url: file,
             type: "GET",
